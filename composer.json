@@ -1,5 +1,5 @@
 {
-  "name": "boxybird/inertia-wordpress",
+  "name": "justdev/inertia-wordpress",
   "description": "The WordPress adapter for Inertia.js",
   "type": "wordpress-plugin",
   "license": "MIT",
@@ -8,14 +8,7 @@
     "inertia.js",
     "plugin"
   ],
-  "authors": [
-    {
-      "name": "Andrew Rhyand",
-      "email": "hello@andrewrhyand.com"
-    }
-  ],
-  "require": {
-  },
+  "require": {},
   "autoload": {
     "psr-4": {
       "BoxyBird\\Inertia\\": "src/"
