@@ -1,14 +1,14 @@
 {
   "name": "justdev/inertia-wordpress",
   "description": "The WordPress adapter for Inertia.js",
-  "type": "wordpress-plugin",
+  "type": "library",
   "license": "MIT",
   "keywords": [
     "wordpress",
     "inertia.js",
     "plugin"
   ],
-  "version": "0.5.6",
+  "version": "0.5.7",
   "require": {},
   "autoload": {
     "psr-4": {

@@ -31,9 +31,9 @@ class Inertia
         self::setProps($props);
 
         $bb_inertia_page = [
-            'url'       => self::$url,
-            'props'     => self::$props,
-            'version'   => self::$version,
+            'url' => self::$url,
+            'props' => self::$props,
+            'version' => self::$version,
             'component' => self::$component,
         ];
 
@@ -74,38 +74,36 @@ class Inertia
     {
         global $wp;
 
-        self::$request = array_merge([
-            'WP-Inertia' => (array) $wp,
-        ], InertiaHeaders::all());
+        self::$request = array_merge(
+            [
+                'WP-Inertia' => (array) $wp,
+            ],
+            InertiaHeaders::all(),
+        );
     }
 
     protected static function setUrl()
     {
-        self::$url = isset($_SERVER['REQUEST_URI'])
-            ? $_SERVER['REQUEST_URI']
-            : '/';
+        self::$url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/';
     }
 
     protected static function setProps(array $props)
     {
         $props = array_merge($props, self::$shared_props);
 
-        $partial_data = isset(self::$request['x-inertia-partial-data'])
-            ? self::$request['x-inertia-partial-data']
-            : null;
+        $partial_data = isset(self::$request['x-inertia-partial-data']) ? self::$request['x-inertia-partial-data'] : '';
 
         $only = array_filter(explode(',', $partial_data));
 
-        $partial_component = isset(self::$request['x-inertia-partial-component'])
-            ? self::$request['x-inertia-partial-component']
-            : null;
+        $partial_component = isset(self::$request['x-inertia-partial-component']) ? self::$request['x-inertia-partial-component'] : null;
 
-        $props = ($only && $partial_component === self::$component)
-            ? InertiaHelper::arrayOnly($props, $only)
-            : array_filter($props, function ($prop) {
-                // remove lazy props when not calling for partials
-                return ! ($prop instanceof LazyProp);
-            });
+        $props =
+            $only && $partial_component === self::$component
+                ? InertiaHelper::arrayOnly($props, $only)
+                : array_filter($props, function ($prop) {
+                    // remove lazy props when not calling for partials
+                    return !($prop instanceof LazyProp);
+                });
 
         array_walk_recursive($props, function (&$prop) {
             if ($prop instanceof LazyProp) {
