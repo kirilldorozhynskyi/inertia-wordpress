@@ -4,9 +4,15 @@ namespace BoxyBird\Inertia;
 
 class InertiaHeaders
 {
+    protected static $headers;
+
     public static function all()
     {
-        return array_change_key_case(getallheaders(), CASE_LOWER);
+        if (self::$headers === null) {
+            self::$headers = array_change_key_case(getallheaders(), CASE_LOWER);
+        }
+
+        return self::$headers;
     }
 
     public static function inRequest()

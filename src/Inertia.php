@@ -72,14 +72,8 @@ class Inertia
 
     protected static function setRequest()
     {
-        global $wp;
-
-        self::$request = array_merge(
-            [
-                'WP-Inertia' => (array) $wp,
-            ],
-            InertiaHeaders::all(),
-        );
+        // Only store relevant request headers used for partial reload checks
+        self::$request = InertiaHeaders::all();
     }
 
     protected static function setUrl()
