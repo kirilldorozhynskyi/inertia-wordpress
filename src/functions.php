@@ -13,7 +13,67 @@ if (!function_exists('bb_inject_inertia')) {
             ? 'class="' . $classes . '"'
             : '';
 
-        $page = wp_json_encode($bb_inertia_page);
+        $page_data = apply_filters('bb_inertia_page', $bb_inertia_page);
+
+        $compact_enabled = (bool) apply_filters('bb_inertia_compact_enabled', true);
+        if ($compact_enabled && isset($page_data['props']) && is_array($page_data['props'])) {
+            $compact_options = apply_filters('bb_inertia_compact_options', [
+                'remove_nulls' => true,
+                'remove_empty_strings' => true,
+                'remove_empty_arrays' => false,
+                'trim_strings' => true,
+            ]);
+
+            if (!function_exists('bb_inertia_compact_array')) {
+                function bb_inertia_compact_array($data, $options = [])
+                {
+                    $defaults = [
+                        'remove_nulls' => true,
+                        'remove_empty_strings' => true,
+                        'remove_empty_arrays' => false,
+                        'trim_strings' => true,
+                    ];
+                    $opt = is_array($options) ? array_merge($defaults, $options) : $defaults;
+
+                    if (!is_array($data)) {
+                        return $data;
+                    }
+
+                    $out = [];
+                    foreach ($data as $k => $v) {
+                        if (is_array($v)) {
+                            $v = bb_inertia_compact_array($v, $opt);
+                            if ($opt['remove_empty_arrays'] && $v === []) {
+                                continue;
+                            }
+                            $out[$k] = $v;
+                            continue;
+                        }
+
+                        if (is_string($v) && $opt['trim_strings']) {
+                            $v = trim($v);
+                        }
+
+                        if ($v === null && $opt['remove_nulls']) {
+                            continue;
+                        }
+
+                        if (is_string($v) && $v === '' && $opt['remove_empty_strings']) {
+                            continue;
+                        }
+
+                        $out[$k] = $v;
+                    }
+
+                    return $out;
+                }
+            }
+
+            $page_data['props'] = bb_inertia_compact_array($page_data['props'], $compact_options);
+        }
+
+        $json_flags = (int) apply_filters('bb_inertia_json_encode_options', JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $page = wp_json_encode($page_data, $json_flags);
         $content = '';
 
         if(
