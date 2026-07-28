@@ -114,7 +114,6 @@ if (!function_exists('bb_inject_inertia')) {
 
                     $raw = curl_exec($curl);
                     $err = curl_errno($curl);
-                    curl_close($curl);
 
                     if (!$err && $raw) {
                         $decoded = json_decode($raw);
