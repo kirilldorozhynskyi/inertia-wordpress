@@ -76,12 +76,18 @@ if (!function_exists('bb_inject_inertia')) {
         $page = wp_json_encode($page_data, $json_flags);
         $content = '';
 
+        $ssr_entry_path = apply_filters(
+            'bb_inertia_ssr_entry_path',
+            get_template_directory() . '/build/ssr/ssr.js'
+        );
+
         if(
             // Not an AJAX request
             !(defined('DOING_AJAX') && DOING_AJAX)
             
             // SSR entry point exists
-            && file_exists(get_template_directory().'/build/ssr/ssr.js')) 
+            && is_string($ssr_entry_path)
+            && file_exists($ssr_entry_path))
         {
             // Optionally skip SSR via filter or in admin
             $ssr_enabled  = apply_filters('bb_inertia_enable_ssr', true);
